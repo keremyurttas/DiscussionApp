@@ -10,7 +10,7 @@
 
     <!-- <movie-card
           v-for="movie in movies"
-          :key="movie.id"
+          
           :title="movie.title"
           :description="movie.overview"
           :img="`https://image.tmdb.org/t/p/w1280/${movie.backdrop_path}`"
