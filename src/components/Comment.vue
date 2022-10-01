@@ -115,6 +115,7 @@ export default {
             );
 
             this.$emit("fetchData");
+            // this.$eventbus.emit('deleteVote',voteKey)
             this.isVoteLoading = false;
           }
         }

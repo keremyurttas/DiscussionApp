@@ -18,9 +18,9 @@
             </p>
           </div>
 
-          <span>Comments count : {{ discussionInfo.commentsCount }}</span>
+          <span>Comments count : {{ discussionInfo.comments.length }}</span>
           <router-link
-            :to="'/discussion/' + discussionInfo.discussionKey"
+            :to="'/discussion/' + discussionInfo.key"
             class="bg-gray-600 text-white p-2 rounded-md"
             tag="button"
           >
@@ -34,11 +34,7 @@
 <script>
 export default {
   props: ["discussionInfo"],
-  data() {
-    return {
-      commentCount: 0,
-    };
-  },
+
   methods: {},
   computed: {
     // getVoteCount(){
