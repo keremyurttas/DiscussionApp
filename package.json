@@ -11,7 +11,11 @@
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
+    "firebase": "^8.10.0",
+    "firebase-functions": "^3.23.0",
     "vue": "^2.6.11",
+    "vue-resource": "^1.5.3",
     "vue-router": "^3.6.4"
   },
   "devDependencies": {
