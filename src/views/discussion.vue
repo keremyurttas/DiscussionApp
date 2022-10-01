@@ -29,32 +29,32 @@
         role="list"
         class="divide-y divide-gray-200 dark:divide-gray-700 mt-6"
       >
-        <comment-component
+        <comment
           @fetchData="fetchData(discussion.discussionKey)"
           @deleteComment="deleteComment($event)"
           :key="index"
           v-for="(comment, index) in sortComments"
           :data="comment"
-        ></comment-component>
+        ></comment>
       </ul>
     </div>
 
-    <add-comment-component
+    <add-comment
       :discussionId="discussion.discussionKey"
       @newComment="addNewComment($event)"
       @fetchData="fetchData(discussion.discussionKey)"
-    ></add-comment-component>
+    ></add-comment>
   </div>
 </template>
 <script>
-import commentComponent from "./commentComponent";
-import addCommentComponent from "./addCommentComponent.vue";
+import Comment from "../components/Comment.vue";
+import AddComment from "../components/Comment.vue";
 import axios from "axios";
 
 export default {
   components: {
-    commentComponent,
-    addCommentComponent,
+    Comment,
+    AddComment,
   },
   computed: {
     sortComments() {

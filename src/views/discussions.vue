@@ -40,9 +40,9 @@
 
     <div class="flex justify-center flex-wrap items-center space-y-6">
       <discussion-sum-component
-        :discussionInfo="discussion"
-        :key="index"
         v-for="(discussion, index) in searchFunction"
+        :key="index"
+        :discussionInfo="discussion"
       ></discussion-sum-component>
       <!-- <div :key="i"
         v-for="(discussion,i) in searchFunction">
@@ -54,9 +54,10 @@
 </template>
 <script>
 import axios from "axios";
-import createDiscussionPopup from "./createDiscussionPopup";
-import discussionSumComponent from "./discussionSumComponent";
-import CreateDiscussionPopup from "./createDiscussionPopup.vue";
+import { api } from "../api/api.js";
+import createDiscussionPopup from "../components/createDiscussionPopup.vue";
+import discussionSumComponent from "../components/discussionSumComponent";
+import CreateDiscussionPopup from "../components/createDiscussionPopup.vue";
 
 export default {
   components: {
@@ -86,7 +87,7 @@ export default {
         });
       } else if (this.selected == "interaction") {
         sortedDiscussions.sort((a, b) =>
-          a.commentsCount < b.commentsCount ? 1 : -1
+          a.comments.length < b.comments.length ? 1 : -1
         );
       } else if (this.selected == "newest") {
         sortedDiscussions.sort((a, b) => {
@@ -133,6 +134,34 @@ export default {
   },
 
   methods: {
+    deleteDiscVote(key) {
+      const index = this.allDiscussions.findIndex((d) => d.key === key);
+      this.allDiscussions[index].comments.splice(index, 1);
+      //
+      // const [error, data] = api({method:'post',{IR},{askg})
+      // newDisc.key = data
+      // this.allDiscussions.push(newD)
+    },
+
+    filterFirebaseKeys(data) {
+      let arr = [];
+      for (let key in data) {
+        data[key].key = key;
+        arr.push(data[key]);
+      }
+      return arr;
+    },
+    async testDsc() {
+      let allDcs = [];
+      const [error, data] = await api({ method: "get", URL: "/.json" });
+      allDcs = await this.filterFirebaseKeys(data);
+      //
+      this.allDiscussions = await allDcs.map((dc) => ({
+        ...dc,
+        comments: this.filterFirebaseKeys(dc.comments),
+      }));
+      if (error) return; // !!!!
+    },
     async fetchDiscussions() {
       this.allDiscussions = [];
       await axios
@@ -141,7 +170,7 @@ export default {
         )
         .then((resp) => {
           let data = resp.data;
-          console.log(data);
+          console.log("Response from axios method: ", data);
           for (let key in data) {
             console.log(data[key]);
             if (!data[key]) {
@@ -175,7 +204,8 @@ export default {
   },
 
   created() {
-    this.fetchDiscussions();
+    // this.fetchDiscussions();
+    this.testDsc();
   },
 };
 </script>
