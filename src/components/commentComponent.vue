@@ -47,18 +47,14 @@
           <button @click="vote">
             <img
               class="w-6 h-6"
-              :class="
-                this.checkIsUserVoted
-                  ? 'bg-green-500  '
-                  : 'bg-white'
-              "
+              :class="this.checkIsUserVoted ? 'bg-green-500  ' : 'bg-white'"
               src="../assets/up-arrow-svgrepo-com (1).svg"
               alt=""
             />
           </button>
           <div v-if="!isVoteLoading">{{ this.getVoteLength }}</div>
           <div v-else class="w-4 h-4">
-            <img src="../media/loader-icon.svg" alt="">
+            <img src="../media/loader-icon.svg" alt="" />
           </div>
         </div>
       </div>
@@ -73,17 +69,17 @@ export default {
     return {
       showMore: false,
       currentUser: localStorage.getItem("activeUser"),
-      isVoteLoading:false,
-      localData:{}
+      isVoteLoading: false,
+      localData: {},
     };
   },
 
-  props: ["data",],
+  props: ["data"],
   computed: {
     getVoteLength() {
       if (this.data.vote === undefined) return 0;
-      console.log(this.data.vote)
-      console.log(Object.keys(this.data.vote))
+      console.log(this.data.vote);
+      console.log(Object.keys(this.data.vote));
       return Object.keys(this.data.vote).length;
     },
     checkIsUserVoted() {
@@ -91,10 +87,9 @@ export default {
       for (let key in this.data.vote) {
         emails.push(this.data.vote[key].vote);
       }
-     
+
       return emails.includes(this.currentUser);
     },
-   
   },
   methods: {
     async deleteComment() {
@@ -102,57 +97,51 @@ export default {
         await axios.delete(
           `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}.json`
         );
-        this.$emit("deleteComment",this.data.commentKey)
-        
+        this.$emit("deleteComment", this.data.commentKey);
       } else {
         alert("You can't delete different account's comment");
       }
     },
     async vote() {
-      console.log(this.data)
+      console.log(this.data);
       if (this.checkIsUserVoted) {
-        this.isVoteLoading=true;
-   
-        for(let key in this.data.vote){
-          const activeKey = this.data.vote[key]
-          if(activeKey.vote==this.currentUser){
+        this.isVoteLoading = true;
+
+        for (let key in this.data.vote) {
+          const activeKey = this.data.vote[key];
+          if (activeKey.vote == this.currentUser) {
             await axios.delete(
               `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote/${key}.json`
-            )
-           
+            );
+
             this.$emit("fetchData");
-            this.isVoteLoading=false;
+            this.isVoteLoading = false;
           }
-           
-          
-         
         }
-       
-    } else
-      {this.isVoteLoading=true
-      await axios
-        .post(
-          `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote.json`,
-          { vote: this.currentUser }
-        )
-        .then((resp) => {
-          // console.log(resp);
-          // this.localData.vote=this.currentUser
-          // Object.assign(this.localData.vote,["vote":{vote:this.currentUser])
-          // this.localData.vote.push({vote:{vote:this.currentUser}})
-          console.log(this.localData)
-          this.$emit("fetchData");
-          this.isVoteLoading=false;
-          console.log(resp);
-        });}
+      } else {
+        this.isVoteLoading = true;
+        await axios
+          .post(
+            `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote.json`,
+            { vote: this.currentUser }
+          )
+          .then((resp) => {
+            // console.log(resp);
+            //  this.localData.vote+={vote:this.currentUser}
+            // Object.assign(this.localData.vote,["vote":{vote:this.currentUser])
+            // this.localData.vote.push({vote:{vote:this.currentUser}})
+            console.log(this.localData);
+            this.$emit("fetchData");
+            this.isVoteLoading = false;
+            console.log(resp);
+          });
+      }
     },
   },
-  created(){
-    this.localData=this.data
-    console.log(this.localData)
-  }
+  created() {
+    this.localData = this.data;
+    console.log(this.localData);
+  },
 };
 </script>
-<style>
-
-</style>
+<style></style>

@@ -35,7 +35,6 @@
     <create-discussion-popup
       v-if="isCreatePopupShowing"
       @newDiscussion="pushNewDiscussion($event)"
-      
       @closePopup="isCreatePopupShowing = $event"
     ></create-discussion-popup>
 
@@ -142,30 +141,37 @@ export default {
         )
         .then((resp) => {
           let data = resp.data;
+          console.log(data);
           for (let key in data) {
-            data[key].discussionKey = key;
-            let commentsCount;
-            console.log(data[key].comments)
-            data[key].comments == undefined
-              ? (commentsCount = 0)
-              : (commentsCount = Object.keys(data[key].comments).length);
-
-            data[key].commentsCount = commentsCount;
-
             console.log(data[key]);
-            // data[key].commentsCount = 0;
-            // for (let comment in data[key].comments) {
-            //   comment;
-            //   data[key].commentsCount++;
-            // }
+            if (!data[key]) {
+              return;
+            } else {
+              data[key].discussionKey = key;
+              let commentsCount;
+              console.log(data[key].comments);
+              data[key].comments == undefined
+                ? (commentsCount = 0)
+                : (commentsCount = Object.keys(data[key].comments).length);
 
-            this.allDiscussions.push(data[key]);
+              data[key].commentsCount = commentsCount;
+
+              console.log(data[key]);
+              // data[key].commentsCount = 0;
+              // for (let comment in data[key].comments) {
+              //   comment;
+              //   data[key].commentsCount++;
+              // }
+
+              this.allDiscussions.push(data[key]);
+              console.log(this.allDiscussions);
+            }
           }
         });
     },
-    pushNewDiscussion(newDiscussion){
-      this.allDiscussions.push(newDiscussion)
-    }
+    pushNewDiscussion(newDiscussion) {
+      this.allDiscussions.push(newDiscussion);
+    },
   },
 
   created() {

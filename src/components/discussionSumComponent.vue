@@ -67,7 +67,6 @@ export default {
     //   console.log(this.discussionInfo.commentsCount)
     //   for (let key in this.discussionInfo.comments) {
     //     key;
-
     //     commentCount++;
     //   }
     //   return commentCount;

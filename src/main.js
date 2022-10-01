@@ -33,7 +33,7 @@ router.beforeEach((to,from,next)=>{
   const requiresAuth=to.matched.some(record=>record.meta.requiresAuth);
   const isAuthanticated = firebase.auth().currentUser;
   if(requiresAuth&&!isAuthanticated){
-    alert("You must have logged in for look into discussion details")
+    // alert("You must have logged in for look into discussion details")
     next("/discussions")
   }
   else{

@@ -58,9 +58,8 @@ export default {
   },
   computed: {
     sortComments() {
-     
       let sortedComments = this.comments;
-      
+
       sortedComments.forEach((comment) => {
         if (comment.vote == undefined) {
           comment.voteCount = 0;
@@ -115,8 +114,8 @@ export default {
           console.log(err);
         });
     },
-    addNewComment(comment){
-      this.comments.push(comment)
+    addNewComment(comment) {
+      this.comments.push(comment);
     },
     deleteComment(deleteKey) {
       Object.values(this.comments).forEach((item) => {

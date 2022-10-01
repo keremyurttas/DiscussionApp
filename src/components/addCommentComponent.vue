@@ -74,14 +74,12 @@ export default {
           .then((response) => {
             console.log(response);
             // this.comment.text=this.text
-            
-            // this.$emit("fetchData");
-          })
-          // console.log(this.text)
-          this.comment.text=this.text
-          this.$emit("newComment",this.comment);
 
-         
+            this.$emit("fetchData");
+          });
+        // console.log(this.text)
+        // this.comment.text=this.text
+        // this.$emit("newComment",this.comment);
       } else {
         alert("Input can not be blank");
       }

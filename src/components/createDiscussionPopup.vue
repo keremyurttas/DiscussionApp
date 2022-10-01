@@ -9,7 +9,6 @@
         Topic of the discussion :
         <input
           v-model="discussionSubject"
-          
           placeholder="Start a discussion !"
           class="rounded-md w-10/12 h-full px-2 text-gray-500 bg-gray-100 ml-5"
           type="text"
@@ -21,7 +20,7 @@
           Create a discussion
         </button>
       </div>
-      
+
       <button
         @click="closePopupFunc"
         class="bg-red-400 text-black rounded-lg absolute top-2 right-2 p-1"
@@ -37,22 +36,19 @@ export default {
   data() {
     return {
       discussionSubject: "",
-      discussion:{
-              subject:"",
-              owner: localStorage.getItem("activeUser"),
-              createdTime: this.formatDate(new Date()),
-      }
+      discussion: {
+        subject: "",
+        owner: localStorage.getItem("activeUser"),
+        createdTime: this.formatDate(new Date()),
+      },
     };
   },
-  computed:{
-    
-  },
+  computed: {},
   methods: {
     closePopupFunc() {
       this.$emit("closePopup", false);
     },
     createNewDiscussion() {
-      
       if (this.discussionSubject.trim() !== "") {
         axios
           .post(
@@ -64,11 +60,10 @@ export default {
             }
           )
           .then(() => {
-            
             this.$emit("closePopup", false);
           });
-          this.discussion.subject=this.discussionSubject
-          this.$emit("newDiscussion",this.discussion);
+        this.discussion.subject = this.discussionSubject;
+        this.$emit("newDiscussion", this.discussion);
       } else {
         alert("Textarea is empty");
       }
