@@ -31,7 +31,9 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+// import axios from "axios";
+import { api } from '../api/api';
+import { eventBus } from '../main';
 export default {
   data() {
     return {
@@ -48,22 +50,40 @@ export default {
     closePopupFunc() {
       this.$emit("closePopup", false);
     },
-    createNewDiscussion() {
+    async  createNewDiscussion() {
       if (this.discussionSubject.trim() !== "") {
-        axios
-          .post(
-            "https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions.json",
-            {
-              subject: this.discussionSubject,
-              owner: localStorage.getItem("activeUser"),
-              createdTime: this.formatDate(new Date()),
-            }
-          )
-          .then(() => {
-            this.$emit("closePopup", false);
-          });
+        const [err, data] = await api({
+          method: "post",
+          URL: `.json`,
+          body:{subject: this.discussionSubject,
+               owner: localStorage.getItem("activeUser"),
+               createdTime: this.formatDate(new Date()),
+               comments:[]
+              }
+        })
+        this.discussion.key=data.name
+        this.$emit("closePopup", false);
         this.discussion.subject = this.discussionSubject;
-        this.$emit("newDiscussion", this.discussion);
+        eventBus.$emit("newDiscussion", this.discussion);
+        return err;
+
+
+
+
+
+        // axios
+          // .post(
+          //   "https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions.json",
+          //   {
+          //     subject: this.discussionSubject,
+          //     owner: localStorage.getItem("activeUser"),
+          //     createdTime: this.formatDate(new Date()),
+          //   }
+          // )
+          // .then(() => {
+          //   this.$emit("closePopup", false);
+          // });
+    
       } else {
         alert("Textarea is empty");
       }
@@ -88,5 +108,14 @@ export default {
       );
     },
   },
+  created(){
+    console.log("created")
+    eventBus.$on("data",()=>{
+      console.log("createDiss")
+    })
+    eventBus.$on("newTest",()=>{
+  console.log("test")
+})
+  }
 };
 </script>

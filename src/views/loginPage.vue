@@ -33,7 +33,7 @@
 </template>
 <script>
 import firebase from "firebase";
-
+import { eventBus } from "../main";
 export default {
   data() {
     return {
@@ -51,7 +51,9 @@ export default {
           .signInWithEmailAndPassword(this.user.email, this.user.password);
 
         this.$router.push("/discussions");
-        localStorage.setItem("activeUser", val.user.email);
+        window.localStorage.setItem("activeUser", val.user.email);
+        eventBus.$emit("sendDiscussions")
+        
       } catch (error) {
         console.log(error);
       }

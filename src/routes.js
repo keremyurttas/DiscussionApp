@@ -11,7 +11,7 @@ export const routes = [
     path: "/discussion/:id",
     component: discussion,
     name: "discussion",
-    meta: { requiresAuth: true },
+    
   },
   // {
   //   path: "/addComment",

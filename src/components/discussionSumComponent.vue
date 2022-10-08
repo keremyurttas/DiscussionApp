@@ -19,23 +19,31 @@
           </div>
 
           <span>Comments count : {{ discussionInfo.comments.length }}</span>
-          <router-link
-            :to="'/discussion/' + discussionInfo.key"
+          <button
+          @click="test"
+          
             class="bg-gray-600 text-white p-2 rounded-md"
             tag="button"
           >
             View Full Discussion
-          </router-link>
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+
 export default {
   props: ["discussionInfo"],
 
-  methods: {},
+  methods: {
+    test(){
+      this.$router.push('/discussion/' + this.discussionInfo.key)
+     
+      window.localStorage.setItem("activeDiscussion",JSON.stringify(this.discussionInfo))
+    }
+  },
   computed: {
     // getVoteCount(){
     //   let voteCount=""
@@ -67,7 +75,9 @@ export default {
     //   }
     //   return commentCount;
     // },
+  
     // created() {
-  }, // },
+  },
+  
 };
 </script>

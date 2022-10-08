@@ -33,6 +33,8 @@
 </template>
 <script>
 import firebase from "firebase";
+import { eventBus } from '../main';
+
 export default {
   data() {
     return {
@@ -50,6 +52,7 @@ export default {
           localStorage.setItem("activeUser", userRecord.email);
           console.log(userRecord.uid);
           this.$router.push("/discussions");
+          eventBus.$emit("sendDiscussions")
         })
 
         .catch((error) => {

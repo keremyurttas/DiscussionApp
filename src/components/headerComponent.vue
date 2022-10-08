@@ -4,7 +4,7 @@
        
       <li><router-link  v-if="!user" to="/" tag="a">Log-in</router-link></li>
       
-      <li><router-link to="/discussions" tag="a">All Discussions</router-link></li>
+      <li><router-link @click.native="allDiscussions" to="/discussions" tag="a">All Discussions</router-link></li>
       <hr />
       <li>
         <router-link v-if="!user" to="/register" tag="a">Register</router-link>
@@ -18,11 +18,16 @@
       <div v-if="user" class="absolute right-4 ">
         Current user : {{user.email}}
       </div>
+ 
     </ul>
   </div>
 </template>
 <script>
 import firebase from "firebase";
+import { eventBus } from '../main';
+
+
+
 export default {
   data() {
     return {
@@ -30,6 +35,7 @@ export default {
     };
   },
   created() {
+  
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.user = user;
@@ -42,6 +48,13 @@ export default {
     logOut() {
       firebase.auth().signOut();
     },
-  },
+    allDiscussions(){
+      eventBus.$emit("sendDiscussions")
+    }
+ 
+},
+
+  
 };
+
 </script>

@@ -40,6 +40,7 @@ router.beforeEach((to,from,next)=>{
     next();
   }
 })
+export const eventBus = new Vue(); // creating an event bus.
 
 new Vue({
   render: h => h(App),

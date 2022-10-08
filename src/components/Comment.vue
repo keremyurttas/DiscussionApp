@@ -1,7 +1,7 @@
 <template>
   <div class="w-screen flex justify-center">
     <li class="py-3 sm:py-4 w-2/3">
-      <div class="flex items-center space-x-4">
+      <div @click="test" class="flex items-center space-x-4">
         <div class="flex-shrink-0">
           <img
             class="w-8 h-8 rounded-full"
@@ -62,87 +62,138 @@
   </div>
 </template>
 <script>
-
 import axios from "axios";
-
+import { api } from "../api/api";
+import { eventBus } from "../main";
 export default {
   data() {
     return {
       showMore: false,
       currentUser: localStorage.getItem("activeUser"),
       isVoteLoading: false,
-      localData: {},
     };
   },
 
   props: ["data"],
   computed: {
     getVoteLength() {
-      if (this.data.vote === undefined) return 0;
-      console.log(this.data.vote);
-      console.log(Object.keys(this.data.vote));
-      return Object.keys(this.data.vote).length;
+      return this.data.vote.length;
     },
     checkIsUserVoted() {
       let emails = [];
       for (let key in this.data.vote) {
         emails.push(this.data.vote[key].vote);
+        
       }
-
+      
       return emails.includes(this.currentUser);
     },
   },
   methods: {
+    test(){
+      console.log(this.data)
+    },
     async deleteComment() {
       if (this.data.owner === this.currentUser) {
-        await axios.delete(
-          `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}.json`
-        );
-        this.$emit("deleteComment", this.data.commentKey);
+        const [error, data] = await api({
+          method: "delete",
+          URL: `/${this.data.discussionKey}/comments/${this.data.key}.json`,
+        });
+        console.log(data);
+        console.log(this.data)
+        eventBus.$emit("deleteComment", this.data);
+        return error;
+        // await axios.delete(
+        //   `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}.json`
+        // );
       } else {
         alert("You can't delete different account's comment");
       }
     },
+
     async vote() {
-      console.log(this.data);
+      
       if (this.checkIsUserVoted) {
+      
         this.isVoteLoading = true;
 
-        for (let key in this.data.vote) {
-          const activeKey = this.data.vote[key];
-          if (activeKey.vote == this.currentUser) {
-            await axios.delete(
-              `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote/${key}.json`
-            );
+        const index = this.data.vote.findIndex(
+          (d) => d.vote === this.currentUser
+        );
 
-            this.$emit("fetchData");
-            // this.$eventbus.emit('deleteVote',voteKey)
-            this.isVoteLoading = false;
-          }
-        }
-      } else {
-        this.isVoteLoading = true;
-        await axios
-          .post(
-            `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote.json`,
-            { vote: this.currentUser }
+        axios
+          .delete(
+            `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.key}/vote/${this.data.vote[index].key}.json`
           )
           .then((resp) => {
-            // console.log(resp);
-            //  this.localData.vote+={vote:this.currentUser}
-            // Object.assign(this.localData.vote,["vote":{vote:this.currentUser])
-            // this.localData.vote.push({vote:{vote:this.currentUser}})
-            console.log(this.localData);
-            this.$emit("fetchData");
-            this.isVoteLoading = false;
             console.log(resp);
+            this.isVoteLoading = false;
           });
+
+        eventBus.$emit("deleteVote", {
+          vote: this.currentUser,
+          commentKey: this.data.key,
+          discussionKey:this.data.discussionKey
+        });
+        
+        // console.log("datra", this.data);
+        // const [error, data] = api({
+        //   method: "delete",
+        //   URL: `/${this.data.discussionKey}/comments/${this.data.key}/vote/${this.data.vote[index].key}.json`,
+        // });
+        // console.log("delete", data);
+        // console.log(error)
+        // this.$emit("deleteVote", {
+        //   vote: this.currentUser,
+        //   key: data.name,
+        //   commentKey: this.data.key,
+        // });
+        // this.isVoteLoading = false;
+        // return error;
+
+        // for (let key in this.data.vote) {
+        //   const activeKey = this.data.vote[key];
+        //   if (activeKey.vote == this.currentUser) {
+        //     const [error, data] = await api({
+        //       method: "delete",
+        //       URL: `/${this.data.discussionKey}/comments/${this.data.key}/vote/${key}.json`,
+        //     });
+        //     console.log(data);
+        //     // await axios.delete(
+        //     //   `https://vuejs-vue-resource-6f650-default-rtdb.firebaseio.com/discussions/${this.data.discussionKey}/comments/${this.data.commentKey}/vote/${key}.json`
+        //     // );
+        //     //votenin keyini alıp eventbusla sil
+
+        //     this.$emit("fetchData");
+        //     // this.$eventbus.emit('deleteVote',voteKey)
+        //     this.isVoteLoading = false;
+        //     return error;
+        //   }
+        // }
+      } else {
+        this.isVoteLoading = true;
+        const [error, data] = await api({
+          method: "post",
+          URL: `/${this.data.discussionKey}/comments/${this.data.key}/vote.json`,
+          body: { vote: this.currentUser },
+        });
+        console.log(data);
+        eventBus.$emit("newVote", {
+          vote: this.currentUser,
+          key: data.name,
+          commentKey: this.data.key,
+          discussionKey:this.data.discussionKey
+        });
+        this.isVoteLoading = false;
+        return error;
       }
     },
   },
   created() {
-    this.localData = this.data;
-    console.log(this.localData);
+    console.log(this.data);
+    //   for (let key in this.data) {
+    //       this.data[key].key = key;
+    // }
   },
 };
 </script>
