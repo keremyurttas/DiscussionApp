@@ -62,6 +62,7 @@
   </div>
 </template>
 <script>
+
 import axios from "axios";
 
 export default {
@@ -115,6 +116,7 @@ export default {
             );
 
             this.$emit("fetchData");
+            // this.$eventbus.emit('deleteVote',voteKey)
             this.isVoteLoading = false;
           }
         }
